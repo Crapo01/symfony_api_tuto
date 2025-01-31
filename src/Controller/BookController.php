@@ -2,17 +2,19 @@
 
 namespace App\Controller;
 
+
 use App\Repository\BookRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerInterface;
 
 final class BookController extends AbstractController
 {
-    #[Route('/books', name: 'books', methods: ['GET'])]
+    #[Route('/api/books', name: 'books', methods: ['GET'])]
     public function getBooks(BookRepository $bookRepository, SerializerInterface $serializer): JsonResponse
     {
 
@@ -22,7 +24,9 @@ final class BookController extends AbstractController
         return new JsonResponse($jsonBookList,Response::HTTP_OK,[],true);
     }
 
-    #[Route('/books/{id}', name: 'book_by_id', methods: ['GET'])]
+    #[Route('/api/books/{id}', name: 'book_by_id', methods: ['GET'])]
+    #[IsGranted('ROLE_USER', message: 'Vous n\'avez pas les droits suffisants pour créer un livre')]
+    
     public function getBookById(int $id, BookRepository $bookRepository, SerializerInterface $serializer): JsonResponse
     {
 
